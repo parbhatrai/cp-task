@@ -4,6 +4,10 @@
 To set up a local cluster with minikube, follow [instructions](https://minikube.sigs.k8s.io/docs/start/).
 
 ## Build PodChaosMonkey Docker image
+To configure minikube to use local docker, run:
+```
+$ eval $(minikube docker-env)
+```
 
 To build the image locally, run:
 

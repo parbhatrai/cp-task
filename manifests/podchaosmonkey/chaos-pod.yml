@@ -35,7 +35,6 @@ metadata:
   namespace: default
 spec:
   replicas: 1
-  serviceAccountName: chaos-sa
   selector:
     matchLabels:
       app: chaos-monkey
@@ -44,9 +43,10 @@ spec:
       labels:
         app: chaos-monkey
     spec:
+      serviceAccountName: chaos-sa
       containers:
       - name: chaos-app
-        image: chaos:0.6
+        image: chaos:v1
         env:
         - name: NAMESPACE
           valueFrom:
