@@ -1,7 +1,5 @@
-from os import path
 from kubernetes import client, config
 
-import yaml
 import random
 import os
 import time
@@ -12,11 +10,8 @@ def chaos_monkey(h, m, s):
     total_seconds = h*3600 + m*60 + s
     while total_seconds > 0:
       time_left = datetime.timedelta(seconds = total_seconds)
-
       print(time_left)
-
       time.sleep(1)
-
       total_seconds -= 1
     delete_pod()
 
@@ -26,7 +21,7 @@ m = os.environ.get('m')
 s = os.environ.get('s')
 
 def delete_pod():
-  config.load_kube_config()
+  config.load_incluster_config()
   v1 = client.CoreV1Api()
   ns = os.environ.get('NAMESPACE')
   all_pod = v1.list_namespaced_pod(namespace=ns) #json output
@@ -38,7 +33,6 @@ def delete_pod():
 
 def main():
   chaos_monkey(int(h), int(m), int(s))
-
 
 if __name__ == '__main__':
   main()

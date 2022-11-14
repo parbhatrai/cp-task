@@ -1,0 +1,70 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  namespace: default
+  name: chaos-clusterrole
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: chaos-clusterrole-binding
+subjects:
+- kind: ServiceAccount
+  name: chaos-sa
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: chaos-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: chaos-sa
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-monkey
+  labels:
+    app: chaos-monkey
+  namespace: default
+spec:
+  replicas: 1
+  serviceAccountName: chaos-sa
+  selector:
+    matchLabels:
+      app: chaos-monkey
+  template:
+    metadata:
+      labels:
+        app: chaos-monkey
+    spec:
+      containers:
+      - name: chaos-app
+        image: chaos:0.6
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            configMapKeyRef:
+              name: chaos-config
+              key: NAMESPACE
+        - name: h
+          valueFrom:
+            configMapKeyRef:
+              name: chaos-config
+              key: h
+        - name: m
+          valueFrom:
+            configMapKeyRef:
+              name: chaos-config
+              key: m
+        - name: s
+          valueFrom:
+            configMapKeyRef:
+              name: chaos-config
+              key: s

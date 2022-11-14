@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chaos-config
+  namespace: default
+data:
+  NAMESPACE: "ns1"
+  h: "0"
+  m: "0"
+  s: "10"

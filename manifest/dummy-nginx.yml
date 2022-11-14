@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: random-ns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dummy-nginx
+  name: dummy-nginx
+  namespace: random-ns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dummy-nginx
+  template:
+    metadata:
+      labels:
+        app: dummy-nginx
+    spec:
+      containers:
+      - image: nginx:latest
+        imagePullPolicy: Always
+        name: nginx
