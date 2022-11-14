@@ -4,7 +4,7 @@ metadata:
   name: chaos-config
   namespace: default
 data:
-  NAMESPACE: "random-ns"
+  NAMESPACE: "workloads"
   h: "0"
   m: "0"
   s: "10"

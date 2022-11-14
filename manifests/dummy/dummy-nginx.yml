@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: random-ns
+  name: workloads
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -9,7 +9,7 @@ metadata:
   labels:
     app: dummy-nginx
   name: dummy-nginx
-  namespace: random-ns
+  namespace: workloads
 spec:
   replicas: 3
   selector:
