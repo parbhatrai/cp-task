@@ -30,7 +30,7 @@ jobs:
       run: docker build . --file Dockerfile --tag chaos:v0.1
     
     - name: Tag image
-      run: docker tag europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:v0.1
+      run: docker tag chaos:v0.1 europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:v0.1
     
     - name: Push image to Artifact Registry
-      run: docker push europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:TAG
+      run: docker push europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:v0.1
