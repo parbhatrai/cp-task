@@ -10,13 +10,29 @@ on:
 jobs:
 
   build:
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     name: Build
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # actions/checkout MUST come before auth
+    - name: Checkout code
+      uses: 'actions/checkout@v3'
 
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag chaos:$(date +%s)
-              
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: 'projects/1062489644619/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+        service_account: 'cp-task-sva@coen-parbhat-rai.iam.gserviceaccount.com'
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag chaos:v0.1
+    
+    - name: Tag image
+      run: docker tag europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:v0.1
+    
+    - name: Push image to Artifact Registry
+      run: docker push europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:TAG
