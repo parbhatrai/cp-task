@@ -25,7 +25,7 @@ spec:
       serviceAccountName: chaos-sa
       containers:
       - name: chaos-app
-        image: europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task:latest
+        image: europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos
         env:
         - name: NAMESPACE
           valueFrom:
