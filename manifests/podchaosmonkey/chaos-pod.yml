@@ -25,6 +25,8 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: chaos-sa
+  annotations:
+    iam.gke.io/gcp-service-account: cp-task-sva@coen-parbhat-rai.iam.gserviceaccount.com
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -46,7 +48,7 @@ spec:
       serviceAccountName: chaos-sa
       containers:
       - name: chaos-app
-        image: chaos:v1
+        image: europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task:latest
         env:
         - name: NAMESPACE
           valueFrom:

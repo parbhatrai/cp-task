@@ -1,4 +1,4 @@
-name: Image CI
+name: Chaos CI and CD
 
 on:
   push:
@@ -63,6 +63,12 @@ jobs:
         cluster_name: cp-task-gke-cluster
         location: europe-west4
 
-    - id: get-pods
-      name: Test Access
-      run: kubectl get pods
+    - id: deploy-dummy-pods
+      name: Deploy dummy nginx app
+      run: |
+        kubectl apply -f manifests/dummy/dummy-nginx.yml
+        sleep 10
+
+    - id: deploy-chaos
+      name: Deploy chaos app
+      run: kubectl apply -f manifests/podchaosmonkey/chaos-pod.yml
