@@ -9,14 +9,15 @@ module "gke" {
   ip_range_pods              = "gke-subnet-01-pods"
   ip_range_services          = "gke-subnet-01-services"
   release_channel            = "REGULAR"
+  enable_vertical_pod_autoscaling = true
   horizontal_pod_autoscaling = true
-  enable_private_endpoint    = true
+  enable_private_endpoint    = false
   enable_private_nodes       = true
   master_ipv4_cidr_block     = "172.16.10.0/28"
   master_authorized_networks = [
     {
-      cidr_block   = "10.100.0.0/27"
-      display_name = "cp-task-github-actions"
+      cidr_block   = "0.0.0.0/0"
+      display_name = "allow-all"
     },
   ]
 }

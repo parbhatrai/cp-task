@@ -12,7 +12,7 @@ module "vpc" {
       subnet_ip             = "10.10.0.0/24"
       subnet_region         = "europe-west4"
       description           = "gke"
-      subnet_private_access = "true"
+      subnet_private_access = "false"
     }
   ]
 

@@ -6,7 +6,6 @@ on:
   pull_request:
 
 jobs:
-
   build:
     # Add "id-token" with the intended permissions.
     permissions:
@@ -36,3 +35,34 @@ jobs:
     
     - name: Push image to Artifact Registry
       run: docker push europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:v0.1
+
+  deploy:
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    name: Deploy
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    # actions/checkout MUST come before auth
+    - name: Checkout code
+      uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: 'projects/1062489644619/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+        service_account: 'cp-task-sva@coen-parbhat-rai.iam.gserviceaccount.com'
+
+    - id: get-gke-credentials
+      uses: google-github-actions/get-gke-credentials@v0.4.0
+      with:
+        cluster_name: cp-task-gke-cluster
+        location: europe-west4
+
+    - id: get-pods
+      name: Test Access
+      run: kubectl get pods
