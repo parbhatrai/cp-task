@@ -25,7 +25,6 @@ jobs:
       with:
         workload_identity_provider: 'projects/1062489644619/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
         service_account: 'cp-task-sva@coen-parbhat-rai.iam.gserviceaccount.com'
-        create_credentials_file: false
 
     - name: Build the Docker image
       run: docker build . --file Dockerfile -t chaos:v0.1
