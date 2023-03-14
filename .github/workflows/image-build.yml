@@ -34,4 +34,4 @@ jobs:
       run: docker tag chaos:v0.1 europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos
     
     - name: Push image to Artifact Registry
-      run: docker push europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos
+      run: docker push europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos/chaos:v0.1
