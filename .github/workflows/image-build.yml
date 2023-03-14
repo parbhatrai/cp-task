@@ -67,7 +67,7 @@ jobs:
       name: Deploy dummy nginx app
       run: |
         kubectl apply -f manifests/dummy/dummy-nginx.yml
-        sleep 10
+        sleep 5
 
     - id: deploy-chaos
       name: Deploy chaos app
