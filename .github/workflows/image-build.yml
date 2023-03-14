@@ -71,4 +71,6 @@ jobs:
 
     - id: deploy-chaos
       name: Deploy chaos app
-      run: kubectl apply -f manifests/podchaosmonkey/chaos-pod.yml
+      run: |
+        kubectl apply -f manifests/podchaosmonkey/chaos-config.yml
+        kubectl apply -f manifests/podchaosmonkey/chaos-pod.yml
