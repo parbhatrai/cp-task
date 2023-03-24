@@ -1,0 +1,76 @@
+name: Chaos CI and CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build:
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    # actions/checkout MUST come before auth
+    - name: Checkout code
+      uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: 'projects/1062489644619/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+        service_account: 'cp-task-sva@coen-parbhat-rai.iam.gserviceaccount.com'
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile -t chaos:v0.1
+    
+    - name: Tag image
+      run: | 
+          gcloud auth configure-docker europe-west4-docker.pkg.dev
+          docker tag chaos:v0.1 europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:v0.1
+    
+    - name: Push image to Artifact Registry
+      run: docker push europe-west4-docker.pkg.dev/coen-parbhat-rai/cp-task/chaos:v0.1
+
+  deploy:
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    name: Deploy
+    needs: build
+    # if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    # actions/checkout MUST come before auth
+    - name: Checkout code
+      uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: 'projects/1062489644619/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+        service_account: 'cp-task-sva@coen-parbhat-rai.iam.gserviceaccount.com'
+
+    - id: get-gke-credentials
+      uses: google-github-actions/get-gke-credentials@v0.4.0
+      with:
+        cluster_name: cp-task-gke-cluster
+        location: europe-west4
+
+    - id: deploy-dummy-pods
+      name: Deploy dummy nginx app
+      run: |
+        kubectl apply -f manifests/dummy/dummy-nginx.yml
+        sleep 5
+
+    - id: deploy-chaos
+      name: Deploy chaos app
+      run: |
+        kubectl apply -f manifests/podchaosmonkey/chaos-config.yml
+        kubectl apply -f manifests/podchaosmonkey/chaos-pod.yml
